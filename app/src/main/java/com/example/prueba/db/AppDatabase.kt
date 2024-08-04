@@ -8,12 +8,13 @@ import com.example.prueba.entity.RecipeDao
 import com.example.prueba.entity.RecipeEntity
 
 
-@Database(entities = [RecipeEntity::class], version = 1)
-abstract class AppDatabase: RoomDatabase(){
+@Database(entities = [RecipeEntity::class], version = 4)
+abstract class AppDatabase : RoomDatabase() {
     abstract fun recipeDao(): RecipeDao
 
     companion object {
-        @Volatile private var INSTANCE: AppDatabase? = null
+        @Volatile
+        private var INSTANCE: AppDatabase? = null
 
         fun getDatabase(context: Context): AppDatabase {
             return INSTANCE ?: synchronized(this) {
@@ -21,11 +22,14 @@ abstract class AppDatabase: RoomDatabase(){
                     context.applicationContext,
                     AppDatabase::class.java,
                     "recipe_database"
-                ).build()
+                )
+                    .fallbackToDestructiveMigration() // Esta línea permite la destrucción de la base de datos en caso de migración
+                    .build()
                 INSTANCE = instance
                 instance
             }
         }
     }
 }
+
 

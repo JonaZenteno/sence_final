@@ -7,10 +7,10 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.prueba.R
-import com.example.prueba.models.Datum
+import com.example.prueba.entity.RecipeEntity
 import com.google.android.material.textview.MaterialTextView
 
-class RecipeAdapter(private var recipes:List<Datum>)
+class RecipeAdapter(private var recipes:List<RecipeEntity>)
     : RecyclerView.Adapter<RecipeAdapter.RecipeViewHolder>() {
     inner class RecipeViewHolder(view: View): RecyclerView.ViewHolder(view) {
         val titleView: MaterialTextView = view.findViewById(R.id.recipe_title)

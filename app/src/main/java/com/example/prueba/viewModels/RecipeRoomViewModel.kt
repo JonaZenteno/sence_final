@@ -6,37 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.prueba.entity.RecipeDao
 import com.example.prueba.entity.RecipeEntity
-import com.example.prueba.models.RecipesResponse
 import com.example.prueba.retrofit.RetrofitClient
 import kotlinx.coroutines.launch
-
-val dummyRecipes = listOf(
-    RecipeEntity(
-        id = 1,
-        title = "California Roll Sushi Bowls",
-        description = "A delicious sushi bowl...",
-        tags = "Asian",
-        photoUrl = "url_to_photo1",
-        ingredients = "Rice, Crab, Avocado, etc.",
-        directions = "1. Prepare rice...",
-        totalTime = 30,
-        cuisine = "Asian",
-        rating = 4.5
-    ),
-    RecipeEntity(
-        id = 2,
-        title = "Chicken Caesar Wraps",
-        description = "Tasty and easy to make...",
-        tags = "American",
-        photoUrl = "url_to_photo2",
-        ingredients = "Chicken, Lettuce, Caesar dressing, etc.",
-        directions = "1. Grill chicken...",
-        totalTime = 20,
-        cuisine = "American",
-        rating = 4.0
-    )
-    // Agrega más recetas si es necesario
-)
 
 class RecipeRoomViewModel(private val recipeDao: RecipeDao): ViewModel() {
 
@@ -50,7 +21,36 @@ class RecipeRoomViewModel(private val recipeDao: RecipeDao): ViewModel() {
 
     private fun insertDummyData() {
         viewModelScope.launch {
-            recipeDao.insertAll(dummyRecipes)
+            val response = RetrofitClient.instance.getRecipes()
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    // Insertar datos en la base de datos
+                    val recipeEntities = it.data.map { recipe ->
+                        RecipeEntity(
+                            id = recipe.id.toLong(),
+                            title = recipe.title,
+                            description = recipe.description,
+                            tags = recipe.tags,
+                            photoUrl = recipe.photoUrl,
+                            ingredients = recipe.ingredients,
+                            directions = recipe.directions,
+                            totalTime = recipe.totalTime.toLong(),
+                            cuisine = recipe.cuisine,
+                            rating = recipe.rating.toDoubleOrNull() ?: 0.0
+                        )
+                    }
+                    recipeDao.insertAll(recipeEntities)
+//                    _recipes.value = Result.success(it)
+                    Log.d("RecipeViewModel",
+                        "Recipes fetched successfully from API $it")
+
+                } ?: run {
+//                    _recipes.value = Result.failure(Exception("Empty response body"))
+                }
+            } else {
+//                _recipes.value = Result.failure(Exception("Error: ${response.errorBody()?.string()}"))
+            }
+
         }
     }
 

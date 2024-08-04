@@ -8,6 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.prueba.databinding.FragmentRecipeBinding
 import com.example.prueba.models.RecipeApp
 import com.example.prueba.viewModels.RecipeRoomViewModel
@@ -20,7 +22,7 @@ class RecipeFragment : Fragment() {
 
     private var _binding: FragmentRecipeBinding? = null
     private val binding get() = _binding!!
-    private val recipeRoomViewModel: RecipeRoomViewModel by viewModels {
+    private val recipeViewModel: RecipeRoomViewModel by viewModels {
         RecipeRoomViewModelFactory((requireActivity().application as
                 RecipeApp).database.recipeDao())
     }
@@ -39,22 +41,16 @@ class RecipeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-//        val recyclerView:RecyclerView = binding.recipeRecycler
-//        recyclerView.layoutManager = LinearLayoutManager(context)
-//        recipeRoomViewModel.recipesFromDb.observe(viewLifecycleOwner, Observer{ result ->
-//
-//        })
-        recipeRoomViewModel.recipesFromDb.observe(viewLifecycleOwner, Observer
+        val recyclerView: RecyclerView = binding.recipeRecycler
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        recipeViewModel.recipesFromDb.observe(viewLifecycleOwner, Observer
         { recipes ->
             recipes?.let {
+             recyclerView.adapter = RecipeAdapter(recipes)
 
                 Log.d("RecipeFragment", "Number of recipes: ${it.size}")
             }
         })
-
-
-
     }
 
 }
