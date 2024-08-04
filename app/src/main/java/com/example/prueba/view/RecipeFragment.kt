@@ -8,17 +8,23 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.prueba.databinding.FragmentRecipeBinding
-import com.example.prueba.viewModels.RecipeViewModel
+import com.example.prueba.models.RecipeApp
+import com.example.prueba.viewModels.RecipeRoomViewModel
+import com.example.prueba.viewModels.RecipeRoomViewModelFactory
+
+//import com.example.prueba.viewModels.RecipeViewModel
 
 
 class RecipeFragment : Fragment() {
 
     private var _binding: FragmentRecipeBinding? = null
     private val binding get() = _binding!!
-    private val recipeViewModel: RecipeViewModel by viewModels()
+    private val recipeRoomViewModel: RecipeRoomViewModel by viewModels {
+        RecipeRoomViewModelFactory((requireActivity().application as
+                RecipeApp).database.recipeDao())
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -34,20 +40,21 @@ class RecipeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val recyclerView:RecyclerView = binding.recipeRecycler
-        recyclerView.layoutManager = LinearLayoutManager(context)
-        recipeViewModel.recipes.observe(viewLifecycleOwner, Observer{ result ->
-            result.fold(
-                onSuccess = {
-                   Log.d("RecipeFragment", "Recipes: ${it.data}")
-                    recyclerView.adapter = RecipeAdapter(it.data)
-                },
-                onFailure = {
-                    // Handle error
-                    Log.e("RecipeFragment", "Error: ${it.message}")
-                }
-            )
+//        val recyclerView:RecyclerView = binding.recipeRecycler
+//        recyclerView.layoutManager = LinearLayoutManager(context)
+//        recipeRoomViewModel.recipesFromDb.observe(viewLifecycleOwner, Observer{ result ->
+//
+//        })
+        recipeRoomViewModel.recipesFromDb.observe(viewLifecycleOwner, Observer
+        { recipes ->
+            recipes?.let {
+
+                Log.d("RecipeFragment", "Number of recipes: ${it.size}")
+            }
         })
+
+
+
     }
 
 }
