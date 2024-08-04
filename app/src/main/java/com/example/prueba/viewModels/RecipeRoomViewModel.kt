@@ -59,4 +59,11 @@ class RecipeRoomViewModel(private val recipeDao: RecipeDao): ViewModel() {
             _recipesFromDb.value = recipeDao.getAllRecipes()
         }
     }
+    fun getRecipeById(id: Long): LiveData<RecipeEntity> {
+        val recipeLiveData = MutableLiveData<RecipeEntity>()
+        viewModelScope.launch {
+            recipeLiveData.value = recipeDao.getRecipeById(id)
+        }
+        return recipeLiveData
+    }
 }

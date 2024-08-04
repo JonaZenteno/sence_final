@@ -8,8 +8,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.prueba.R
 import com.example.prueba.databinding.FragmentRecipeBinding
 import com.example.prueba.models.RecipeApp
 import com.example.prueba.viewModels.RecipeRoomViewModel
@@ -46,11 +48,20 @@ class RecipeFragment : Fragment() {
         recipeViewModel.recipesFromDb.observe(viewLifecycleOwner, Observer
         { recipes ->
             recipes?.let {
-             recyclerView.adapter = RecipeAdapter(recipes)
-
+                recyclerView.adapter = RecipeAdapter(it) { recipeId ->
+                    val bundle = Bundle().apply {
+                        putLong("recipeId", recipeId)
+                    }
+                    findNavController().navigate(R.id.action_recipeFragment_to_recipeDetailFragment, bundle)
+                }
                 Log.d("RecipeFragment", "Number of recipes: ${it.size}")
             }
         })
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
 }
