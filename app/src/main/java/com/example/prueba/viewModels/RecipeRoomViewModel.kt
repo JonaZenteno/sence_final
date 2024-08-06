@@ -66,4 +66,12 @@ class RecipeRoomViewModel(private val recipeDao: RecipeDao): ViewModel() {
         }
         return recipeLiveData
     }
+
+    fun searchRecipes(query: String): LiveData<List<RecipeEntity>> {
+        val searchResults = MutableLiveData<List<RecipeEntity>>()
+        viewModelScope.launch {
+            searchResults.value = recipeDao.searchRecipes(query)
+        }
+        return searchResults
+    }
 }

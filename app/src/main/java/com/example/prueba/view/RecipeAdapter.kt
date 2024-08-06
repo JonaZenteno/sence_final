@@ -42,7 +42,10 @@ class RecipeAdapter(
     override fun onBindViewHolder(holder: RecipeViewHolder, position: Int) {
         holder.bind(recipes[position])
     }
-
+    fun updateRecipes(newRecipes: List<RecipeEntity>) {
+        recipes = newRecipes
+        notifyDataSetChanged()
+    }
     override fun getItemCount(): Int {
         return recipes.size
     }

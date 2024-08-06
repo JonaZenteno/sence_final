@@ -13,8 +13,10 @@ interface RecipeDao {
     @Query("SELECT * FROM recipes")
     suspend fun getAllRecipes(): List<RecipeEntity>
 
-    @Query("SELECT * FROM recipes WHERE title LIKE :searchQuery OR cuisine LIKE :searchQuery OR tags LIKE :searchQuery")
+
+    @Query("SELECT * FROM recipes WHERE title LIKE '%' || :searchQuery || '%' OR cuisine LIKE '%' || :searchQuery || '%' OR tags LIKE '%' || :searchQuery || '%'")
     suspend fun searchRecipes(searchQuery: String): List<RecipeEntity>
+
 
     @Query("SELECT * FROM recipes WHERE id = :id")
     suspend fun getRecipeById(id: Long): RecipeEntity

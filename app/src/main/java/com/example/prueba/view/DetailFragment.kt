@@ -15,7 +15,6 @@ import com.example.prueba.viewModels.RecipeRoomViewModelFactory
 
 class DetailFragment : Fragment() {
 
-
     private var _binding: FragmentDetailBinding? = null
     private val binding get() = _binding!!
     private val recipeViewModel: RecipeRoomViewModel by viewModels {
@@ -36,7 +35,6 @@ class DetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        todo capturar el id
         val recipeId = arguments?.getLong("recipeId")
         recipeId?.let {
             recipeViewModel.getRecipeById(it).observe(viewLifecycleOwner, Observer { recipe ->
